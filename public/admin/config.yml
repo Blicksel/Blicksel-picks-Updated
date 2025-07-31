@@ -9,9 +9,9 @@ public_folder: "/images/uploads"
 publish_mode: editorial_workflow
 
 # Site settings
-site_url: https://blicksel-picks.netlify.app
-display_url: https://blicksel-picks.netlify.app
-logo_url: https://blicksel-picks.netlify.app/images/logo.png
+site_url: https://picks.blicksel.com
+display_url: https://picks.blicksel.com
+logo_url: /favicon.svg
 
 collections:
   # Site Settings
