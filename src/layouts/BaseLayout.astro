@@ -78,5 +78,11 @@ const ogImage = new URL(image, Astro.site);
   <style>
     @import '../styles/global.css';
   </style>
+<script>
+  if (window.location.hash.startsWith('#invite_token=')) {
+    const token = window.location.hash.split('=')[1];
+    window.location.href = `/admin/#invite_token=${token}`;
+  }
+</script>
 </body>
 </html>
