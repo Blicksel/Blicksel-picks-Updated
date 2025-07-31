@@ -1,0 +1,210 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BlogCard from '../components/BlogCard.astro';
+import Newsletter from '../components/Newsletter.astro';
+import AmazonButton from '../components/AmazonButton.astro';
+import DynamicIcon from '../components/DynamicIcon.astro';
+import { getEntry } from 'astro:content';
+
+// Get homepage content from CMS
+const homepageData = await getEntry('homepage', 'main');
+const { hero, featuredProduct, categories, whyChooseUs, stats } = homepageData.data;
+// Sample featured posts data (in a real app, this would come from a CMS or markdown files)
+const featuredPosts = [
+  {
+    title: "Top 10 Smart Home Devices for 2024",
+    description: "Discover the latest smart home innovations that will transform your living space. From voice assistants to automated lighting systems.",
+    image: "https://images.pexels.com/photos/4112236/pexels-photo-4112236.jpeg?auto=compress&cs=tinysrgb&w=800",
+    url: "/blog/top-10-smart-home-devices-2024",
+    category: "Smart Home",
+    date: "2024-01-15",
+    readingTime: 8,
+    featured: true
+  },
+  {
+    title: "Best Budget Laptops Under $500",
+    description: "Find the perfect affordable laptop without compromising on performance. Our comprehensive review of budget-friendly options.",
+    image: "https://images.pexels.com/photos/812264/pexels-photo-812264.jpeg?auto=compress&cs=tinysrgb&w=800",
+    url: "/blog/best-budget-laptops-under-500",
+    category: "Electronics",
+    date: "2024-01-12",
+    readingTime: 6
+  },
+  {
+    title: "Kitchen Gadgets That Actually Work",
+    description: "Cut through the marketing hype and discover kitchen tools that genuinely make cooking easier and more enjoyable.",
+    image: "https://images.pexels.com/photos/1638280/pexels-photo-1638280.jpeg?auto=compress&cs=tinysrgb&w=800",
+    url: "/blog/kitchen-gadgets-that-work",
+    category: "Kitchen",
+    date: "2024-01-10",
+    readingTime: 5
+  },
+  {
+    title: "Fitness Tracker Comparison 2024",
+    description: "Compare the latest fitness trackers from Apple, Fitbit, and Samsung. Find the perfect device for your health goals.",
+    image: "https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&cs=tinysrgb&w=800",
+    url: "/blog/fitness-tracker-comparison-2024",
+    category: "Health & Fitness",
+    date: "2024-01-08",
+    readingTime: 7
+  }
+];
+---
+
+<BaseLayout 
+  title="Blicksel Picks - Your Trusted Amazon Product Review Source"
+  description="Discover the best Amazon products with honest reviews, detailed comparisons, and expert recommendations. Make informed purchasing decisions with Blicksel Picks."
+>
+  <Header />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-primary-50 via-white to-accent-50 py-20 md:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-8 leading-tight" set:html={hero.title}></h1>
+          <p class="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto leading-relaxed">
+            {hero.subtitle}
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href={hero.primaryCta.url} class="btn-primary text-lg px-8 py-4 rounded-xl font-semibold">
+              {hero.primaryCta.text}
+            </a>
+            <a href={hero.secondaryCta.url} class="btn-accent text-lg px-8 py-4 rounded-xl font-semibold">
+              {hero.secondaryCta.text}
+            </a>
+          </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mt-16">
+          {stats.map(stat => (
+            <div>
+              <div class="flex justify-center mb-2">
+                <DynamicIcon name={stat.icon} class="w-8 h-8 text-primary-600" />
+              </div>
+              <div class="text-4xl md:text-5xl font-bold text-primary-600 mb-2">{stat.number}</div>
+              <div class="text-gray-600 font-medium">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Featured Product Banner -->
+    <section class="bg-gradient-to-r from-accent-600 to-primary-600 text-white py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <div class="mb-6 md:mb-0">
+            <div class="flex items-center mb-4">
+              <span class="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm font-semibold mr-3 flex items-center gap-2">
+                <DynamicIcon name={featuredProduct.badgeIcon} class="w-4 h-4" />
+                {featuredProduct.badge}
+              </span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-3">{featuredProduct.title}</h2>
+            <p class="text-xl text-accent-100 mb-2">{featuredProduct.subtitle}</p>
+            <p class="text-accent-100">{featuredProduct.description}</p>
+          </div>
+          <div class="text-center">
+            <AmazonButton 
+              productUrl={featuredProduct.ctaUrl}
+              productName={featuredProduct.ctaText}
+              price={featuredProduct.price}
+              className="transform hover:scale-105 shadow-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Categories Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Shop by Category</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">Browse our most popular product categories and discover the best deals</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {categories.map(category => (
+            <a 
+              href={`/categories/${category.slug || category.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')}`}
+              class="card text-center p-8 hover:scale-105 hover:shadow-xl transform transition-all duration-300"
+            >
+              <div class="flex justify-center mb-4">
+                <DynamicIcon name={category.icon} class="w-12 h-12 text-gray-600" />
+              </div>
+              <h3 class="font-bold text-gray-900 mb-3 text-lg">{category.name}</h3>
+              <p class="text-gray-600 text-sm mb-4">{category.description}</p>
+              <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${category.colorClass}`}>
+                {category.count} products
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Featured Posts -->
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Latest Reviews & Guides</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Stay updated with our newest product reviews, buying guides, and expert recommendations</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {featuredPosts.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+        
+        <div class="text-center">
+          <a href="/blog" class="btn-primary text-lg px-8 py-4 rounded-xl font-semibold">
+            View All Posts
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Why Choose Us -->
+    <section class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Why Choose Blicksel Picks?</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">We're committed to helping you make the best purchasing decisions with honest, detailed reviews</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {whyChooseUs.map(item => (
+            <div class="text-center">
+              <div class={`w-20 h-20 ${item.colorClass} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
+                <DynamicIcon name={item.icon} class="w-10 h-10 text-primary-600" />
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-4">{item.title}</h3>
+              <p class="text-gray-600 text-lg leading-relaxed">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Newsletter -->
+    <Newsletter />
+    
+    <!-- AdSense Placeholder -->
+    <div class="py-8 bg-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-200 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <p class="text-gray-500">Google AdSense Advertisement Placeholder</p>
+          <p class="text-sm text-gray-400 mt-2">728x90 Leaderboard</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</BaseLayout>
