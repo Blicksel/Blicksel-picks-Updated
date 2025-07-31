@@ -14,43 +14,56 @@
   <!-- Script do Netlify CMS -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 
-  <!-- Inicialização personalizada com suporte a Sign Up -->
+  <!-- Inicialização personalizada com suporte a Sign Up e convite -->
   <script>
-    // Inicializa o CMS com suporte a Sign Up
-    CMS.init({
-      configPath: "/admin/config.yml",
-      identity: {
-        allow_signup: true
-      }
-    });
+    function getInviteToken() {
+      const hash = window.location.hash || '';
+      const match = hash.match(/invite_token=([^&]+)/);
+      return match ? match[1] : null;
+    }
 
-    // Custom preview template for blog posts
-    const PostPreview = createClass({
-      render: function () {
-        const entry = this.props.entry;
-        const image = entry.getIn(['data', 'image']);
-        const body = this.props.widgetFor('body');
+    const inviteToken = getInviteToken();
 
-        return h('div', { className: 'preview-container' },
-          h('div', { className: 'preview-header' },
-            h('h1', { className: 'preview-title' }, entry.getIn(['data', 'title'])),
-            h('p', { className: 'preview-description' }, entry.getIn(['data', 'description'])),
-            image && h('img', {
-              src: this.props.getAsset(image).toString(),
-              alt: entry.getIn(['data', 'title']),
-              className: 'preview-image'
-            })
-          ),
-          h('div', { className: 'preview-content' }, body)
-        );
-      }
-    });
+    // Redireciona para URL com ?invite_token se necessário
+    if (inviteToken) {
+      const url = new URL(window.location.href);
+      url.hash = '';
+      url.searchParams.set('invite_token', inviteToken);
+      window.location.replace(url.toString());
+    } else {
+      // Inicializa o CMS normalmente
+      CMS.init({
+        configPath: "/admin/config.yml",
+        identity: {
+          allow_signup: true
+        }
+      });
 
-    // Register the preview template
-    CMS.registerPreviewTemplate('blog', PostPreview);
-    
-    // Custom preview styles
-    CMS.registerPreviewStyle('/admin/preview.css');
+      // Template de preview personalizado
+      const PostPreview = createClass({
+        render: function () {
+          const entry = this.props.entry;
+          const image = entry.getIn(['data', 'image']);
+          const body = this.props.widgetFor('body');
+
+          return h('div', { className: 'preview-container' },
+            h('div', { className: 'preview-header' },
+              h('h1', { className: 'preview-title' }, entry.getIn(['data', 'title'])),
+              h('p', { className: 'preview-description' }, entry.getIn(['data', 'description'])),
+              image && h('img', {
+                src: this.props.getAsset(image).toString(),
+                alt: entry.getIn(['data', 'title']),
+                className: 'preview-image'
+              })
+            ),
+            h('div', { className: 'preview-content' }, body)
+          );
+        }
+      });
+
+      CMS.registerPreviewTemplate('blog', PostPreview);
+      CMS.registerPreviewStyle('/admin/preview.css');
+    }
   </script>
 </body>
 </html>
